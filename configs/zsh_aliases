@@ -1,0 +1,263 @@
+unalias -a
+# Safety first
+alias cp='cp -i'
+alias mv='mv -i'
+	#alias rm='rm -i'
+
+alias ll='ls -l'
+alias la='ls -A'
+alias l='ls -CF'
+
+# Colorize output, make ls human readable and classify...
+if [[ `uname` == Darwin ]]; then
+  alias dircolors='gdircolors'
+  alias ls='gls --color=auto -hF'
+else
+  alias ls='ls --color=auto -hF'
+
+  # ...and standardize to macOS naming on Linux
+  alias open='xdg-open'
+fi
+
+# Colorize cat with bat
+#alias cat='bat'
+
+# Disk utility aliases
+alias df='df -h'
+alias du='du -h'
+
+# Colorize output and some exclusions
+alias grep="grep --color=auto --exclude-dir={.git,artwork,node_modules,vendor}"
+
+# Git functions
+git_current_branch() {
+  (command git symbolic-ref -q HEAD || command git name-rev --name-only --no-undefined --always HEAD) 2> /dev/null
+}
+
+git_default_branch() {
+  (git symbolic-ref refs/remotes/origin/HEAD | sed 's@^refs/remotes/origin/@@') 2> /dev/null
+}
+
+
+# HTTPie aliases
+alias GET='http'
+alias POST='http POST'
+alias HEAD='http HEAD'
+
+# Nvim takeover
+alias vim='nvim'
+alias vimdiff='nvim -d'
+
+# `ls` after `cd`
+function cd {
+  #builtin cd "$@" && ls
+  builtin cd "$@" 
+}
+
+# Run `nvm` init script on demand to avoid constant slow downs
+function nvm {
+  if [ -z ${NVM_DIR+x} ]; then
+    export NVM_DIR="$HOME/.nvm"
+
+    if [ -s "$NVM_DIR/nvm.sh" ]; then
+      source "$NVM_DIR/nvm.sh"
+    elif [ -s "/usr/share/nvm/init-nvm.sh" ]; then
+      source /usr/share/nvm/init-nvm.sh
+    fi
+
+    nvm "$@"
+  fi
+}
+
+# PID Port
+function pp {
+  ss -lptn sport = :$1 | grep -Eo 'pid=[0-9]+' | cut -c5-
+}
+
+
+# navigation
+alias c..='cd ..' 
+alias c...='cd ../..'
+alias c.3='cd ../../..'
+alias c.4='cd ../../../..'
+alias c.5='cd ../../../../..'
+
+# Merge Xresources
+alias merge='xrdb -merge ~/.Xresources'
+
+# get error messages from journalctl
+alias jctl="journalctl -p 3 -xb"
+
+# gpg encryption
+# verify signature for isos
+alias gpg-check="gpg2 --keyserver-options auto-key-retrieve --verify"
+# receive the key of a developer
+alias gpg-retrieve="gpg2 --keyserver-options auto-key-retrieve --receive-keys"
+
+# youtube-dl
+alias youtube-dl-mp3="youtube-dl --extract-audio  --audio-quality 50k --audio-format mp3 "
+alias youtube-dl-mp3.170="youtube-dl --extract-audio  --audio-quality 70 --audio-format mp3 "
+alias youtube-dl-mp3.128="youtube-dl --extract-audio  --audio-quality 128 --audio-format mp3 "
+alias youtube-dl-mp3.128.n="youtube-dl --extract-audio  --audio-quality 128 --audio-format mp3 -o \"%(playlist_index)3d - %(title)s.%(ext)s\""
+alias youtube-dl-opus="youtube-dl --extract-audio --audio-format opus "
+
+alias youtube-dl-360.w="youtube-dl  --external-downloader aria2c -f 'worstvideo[height=360]+worstaudio/best[height<=360]'"
+alias youtube-dl-360.wn="youtube-dl  --external-downloader aria2c -f 'worstvideo[height=360]+worstaudio/best[height<=360]' -o \"%(playlist_index)3d - %(title)s.%(ext)s\""
+alias youtube-dl-360.b="youtube-dl  --external-downloader aria2c -f 'bestvideo[height<=360]+bestaudio/best[height<=360]'"
+alias youtube-dl-360.wsf="youtube-dl  --external-downloader aria2c -f 'worstvideo[height=360]+worstaudio/best[height<=360]' --write-auto-sub"
+alias youtube-dl-360.ws="youtube-dl  --external-downloader aria2c -f 'worstvideo[height<=360]+worstaudio/best[height<=360]' --write-auto-sub"
+alias youtube-dl-360.bs="youtube-dl  --external-downloader aria2c -f 'bestvideo[height<=360]+bestaudio/best[height<=360]' --write-auto-sub"
+alias youtube-dl-360.wsl="youtube-dl  --external-downloader aria2c -f 'bestvideo[height<=360]+worstaudio/best[height<=360]' --write-sub --sub-lang"
+alias youtube-dl-360.wsle="youtube-dl  --external-downloader aria2c -f 'bestvideo[height<=360]+worstaudio/best[height<=360]' --embed-subs --write-sub --sub-lang"
+
+
+alias youtube-dl-480.w="youtube-dl  --external-downloader aria2c -f 'worstvideo[height=480]+worstaudio/best[height<=480]'"
+alias youtube-dl-480.wn="youtube-dl  --external-downloader aria2c -f 'worstvideo[height=480]+worstaudio/best[height<=480]' -o \"%(playlist_index)3d - %(title)s.%(ext)s\""
+alias youtube-dl-480.b="youtube-dl  --external-downloader aria2c -f 'bestvideo[height<=480]+bestaudio/best[height<=480]'"
+alias youtube-dl-480.wsf="youtube-dl  --external-downloader aria2c -f 'worstvideo[height=480]+worstaudio/best[height<=480]'--write-auto-sub"
+alias youtube-dl-480.ws="youtube-dl  --external-downloader aria2c -f 'worstvideo[height<=480]+worstaudio/best[height<=480]'--write-auto-sub"
+alias youtube-dl-480.bs="youtube-dl  --external-downloader aria2c -f 'bestvideo[height<=480]+bestaudio/best[height<=480]'--write-auto-sub"
+alias youtube-dl-480.wsl="youtube-dl  --external-downloader aria2c -f 'bestvideo[height<=480]+worstaudio/best[height<=480]' --write-sub --sub-lang"
+alias youtube-dl-480.wsle="youtube-dl  --external-downloader aria2c -f 'bestvideo[height<=480]+worstaudio/best[height<=480]' --embed-subs --write-sub --sub-lang"
+
+alias youtube-dl-720.w="youtube-dl -f 'worstvideo[height=720]+worstaudio/best[height<=720]'"
+alias youtube-dl-720.wa="youtube-dl  --external-downloader aria2c -f 'worstvideo[height=720]+worstaudio/best[height<=720]'"
+alias youtube-dl-720.wn="youtube-dl  --external-downloader aria2c -f 'worstvideo[height=720]+worstaudio/best[height<=720]' -o \"%(playlist_index)3d - %(title)s.%(ext)s\""
+alias youtube-dl-720.b="youtube-dl  --external-downloader aria2c -f 'bestvideo[height<=720]+bestaudio/best[height<=720]'"
+alias youtube-dl-720.wsf="youtube-dl  --external-downloader aria2c -f 'worstaudio[height=720]+worstaudio/best[height<=720]'--write-auto-sub"
+alias youtube-dl-720.ws="youtube-dl  --external-downloader aria2c -f 'worstvideo[height<=720]+worstaudio/best[height<=720]'--write-auto-sub"
+alias youtube-dl-720.wb="youtube-dl  --external-downloader aria2c -f 'bestvideo[height<=720]+bestaudio/best[height<=720]'--write-auto-sub"
+alias youtube-dl-720.wsl="youtube-dl  --external-downloader aria2c -f 'bestvideo[height<=720]+worstaudio/best[height<=720]' --write-sub --sub-lang "
+alias youtube-dl-720.wsle="youtube-dl  --external-downloader aria2c -f 'bestvideo[height<=720]+worstaudio/best[height<=720]' --embed-subs --write-sub --sub-lang "
+
+alias youtube-dl-sl="youtube-dl --skip-download --write-sub --sub-lang "
+alias youtube-dl-sle="youtube-dl --skip-download --embed-subs --write-sub --sub-lang "
+alias youtube-dl-sll="youtube-dl  --list-subs "
+alias youtube-dl-s="youtube-dl --skip-download  --write-auto-sub"
+alias youtube-dl-se="youtube-dl --skip-download  --embed-subs --write-auto-sub"
+
+alias yt-dlp-mp3="yt-dlp --extract-audio  --audio-quality 50k --audio-format mp3 "
+alias yt-dlp-mp3.70="yt-dlp --extract-audio  --audio-quality 70 --audio-format mp3 "
+alias yt-dlp-mp3.128="yt-dlp --extract-audio  --audio-quality 128 --audio-format mp3 "
+alias yt-dlp-opus="yt-dlp --extract-audio --audio-format opus "
+
+alias yt-dlp-360.w="yt-dlp  --external-downloader aria2c  -f 'worstvideo[height=360]+worstaudio/best[height<=360]'"
+alias yt-dlp-360.b="yt-dlp  --external-downloader aria2c  -f 'bestvideo[height<=360]+bestaudio/best[height<=360]'"
+alias yt-dlp-360.wn="yt-dlp  --external-downloader aria2c  -f 'worstvideo[height=360]+worstaudio/best[height<=360]' -o \"%(playlist_index)3d - %(title)s.%(ext)s\""
+alias yt-dlp-360.wsf="yt-dlp  --external-downloader aria2c  -f 'worstvideo[height=360]+worstaudio/best[height<=360]' --write-auto-sub"
+alias yt-dlp-360.ws="yt-dlp  --external-downloader aria2c  -f 'worstvideo[height<=360]+worstaudio/best[height<=360]' --write-auto-sub"
+alias yt-dlp-360.bs="yt-dlp  --external-downloader aria2c  -f 'bestvideo[height<=360]+bestaudio/best[height<=360]' --write-auto-sub"
+alias yt-dlp-360.wsl="yt-dlp  --external-downloader aria2c  -f 'bestvideo[height<=360]+worstaudio/best[height<=360]' --write-sub --sub-lang"
+alias yt-dlp-360.wsle="yt-dlp  --external-downloader aria2c  -f 'bestvideo[height<=360]+worstaudio/best[height<=360]' --embed-subs --write-sub --sub-lang"
+alias yt-dlp-360.w.split="yt-dlp --split-chapters  --external-downloader aria2c  -f 'worstvideo[height=360]+worstaudio/best[height<=360]'"
+
+alias yt-dlp-480.w="yt-dlp  --external-downloader aria2c -f 'worstvideo[height=480]+worstaudio/best[height<=480]'"
+alias yt-dlp-480.b="yt-dlp  --external-downloader aria2c -f 'bestvideo[height<=480]+bestaudio/best[height<=480]'"
+alias yt-dlp-480.wn="yt-dlp  --external-downloader aria2c -f 'worstvideo[height=480]+worstaudio/best[height<=480]' -o \"%(playlist_index)3d - %(title)s.%(ext)s\""
+alias yt-dlp-480.wsf="yt-dlp  --external-downloader aria2c -f 'worstvideo[height=480]+worstaudio/best[height<=480]' --write-auto-sub"
+alias yt-dlp-480.ws="yt-dlp  --external-downloader aria2c -f 'worstvideo[height<=480]+worstaudio/best[height<=480]' --write-auto-sub"
+alias yt-dlp-480.bs="yt-dlp  --external-downloader aria2c -f 'bestvideo[height<=480]+bestaudio/best[height<=480]' --write-auto-sub"
+alias yt-dlp-480.wsl="yt-dlp  --external-downloader aria2c -f 'bestvideo[height<=480]+worstaudio/best[height<=480]' --write-sub --sub-lang"
+alias yt-dlp-480.wsle="yt-dlp  --external-downloader aria2c -f 'bestvideo[height<=480]+worstaudio/best[height<=480]' --embed-subs --write-sub --sub-lang"
+alias yt-dlp-480.w.split="yt-dlp --split-chapters  --external-downloader aria2c -f 'worstvideo[height=480]+worstaudio/best[height<=480]'"
+
+alias yt-dlp-720.w="yt-dlp  --external-downloader aria2c -f 'worstvideo[height=720]+worstaudio/best[height<=720]'"
+alias yt-dlp-720.b="yt-dlp  --external-downloader aria2c -f 'bestvideo[height<=720]+bestaudio/best[height<=720]'"
+alias yt-dlp-720.wn="yt-dlp  --external-downloader aria2c -f 'worstvideo[height=720]+worstaudio/best[height<=720]' -o \"%(playlist_index)3d - %(title)s.%(ext)s\""
+alias yt-dlp-720.wsf="yt-dlp  --external-downloader aria2c -f 'worstaudio[height=720]+worstaudio/best[height<=720]' --write-auto-sub"
+alias yt-dlp-720.ws="yt-dlp  --external-downloader aria2c -f 'worstvideo[height<=720]+worstaudio/best[height<=720]' --write-auto-sub"
+alias yt-dlp-720.wb="yt-dlp  --external-downloader aria2c -f 'bestvideo[height<=720]+bestaudio/best[height<=720]' --write-auto-sub"
+alias yt-dlp-720.wsl="yt-dlp  --external-downloader aria2c -f 'bestvideo[height<=720]+worstaudio/best[height<=720]' --write-sub --sub-lang "
+alias yt-dlp-720.wsle="yt-dlp  --external-downloader aria2c -f 'bestvideo[height<=720]+worstaudio/best[height<=720]' --embed-subs --write-sub --sub-lang "
+alias yt-dlp-720.w.split="yt-dlp --split-chapters  --external-downloader aria2c -f 'worstvideo[height=720]+worstaudio/best[height<=720]'"
+
+alias yt-dlp-sl="yt-dlp --skip-download --write-sub --sub-lang "
+alias yt-dlp-sle="yt-dlp --skip-download --embed-subs --write-sub --sub-lang "
+alias yt-dlp-sll="yt-dlp  --list-subs "
+alias yt-dlp-s="yt-dlp --skip-download  --write-auto-sub"
+alias yt-dlp-se="yt-dlp --skip-download  --embed-subs --write-auto-sub"
+
+#nmcli for wifi
+alias nmcli_div="nmcli dev status"
+alias nmcli_div_ena="nmcli radio wifi on"
+alias nmcli_div_dis="nmcli radio wifi off"
+alias nmcli_scan="nmcli dev wifi list"
+alias nmcli_connect="nmcli dev wifi connect "
+alias nmcli_connect_ask="nmcli --ask dev wifi connect "
+alias nmcli_saved="nmcli con show"
+alias nmcli_up_save="nmcli con up "
+alias nmcli_down_save="nmcli con up "
+
+#wget 
+alias wget_all_web='wget --mirror --page-requisites --convert-links --adjust-extension --html-extension --compression=auto --reject-regex "/search|/rss" --no-if-modified-since --no-check-certificate --user-agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/68.0.3440.106 Safari/537.36"'
+alias wget_all_filestype='wget -r -l 1 -nd -A '
+alias wget_page_filestype='wget -l 1 -nd -A '
+alias wget_filestype_exclude='wget -r -l 1 -nd -R '
+alias wget_in_Area='wget -r -l 1 -nd -X '
+
+# vidio time
+alias videotime="{ find . -maxdepth 2 -iname '*.mp4' -exec ffprobe -v quiet -of csv=p=0 \
+         -show_entries format=duration {} \; ; printf '+\n61\n*\np'; } | dc"
+
+# proces 
+alias pf="ps -e | grep $1"
+
+
+# apps minimal
+alias nv='nvim' 
+alias grep='grep --color'
+alias g++nf='g++ -lm -std=c++17 -ggdb -Iinclude -Llib'
+alias g++nfe='g++ -lm -std=c++17 -ggdb -Iinclude -Llib && ./a.out'
+alias g++wf='g++ -Wall -Wextra -lm -std=c++17 -ggdb -Iinclude -Llib'
+alias g++wfe='g++ -Wall -Wextra -lm -std=c++17 -ggdb -Iinclude -Llib && ./a.out'
+
+# utilies
+alias historyrm='echo "" > ~/.zsh_history ; history -c 2> /dev/null '
+alias shutdownme='shutdown -t3 -h now '
+
+alias tmuxs='tmux new-session -s'
+alias tmuxa='tmux attach -t'
+alias tmuxd='tmux detach -t'
+alias tmuxl='tmux ls'
+alias tmuxk='tmux kill-server'
+
+
+alias g++w='g++ -lm -Wall -Wextra -std=c++17 -ggdb -Iinclude -Llibe *.cpp -o main '
+alias g++we='g++ -lm -Wall -Wextra -std=c++17 -ggdb -Iinclude -Llibe *.cpp -o main && ./main '
+alias g++wb='g++ -lm -Wall -Wextra -std=c++17 -ggdb -I"../include" -L"../libe" *.cpp -o "../bin/main" '
+alias g++wbe='g++ -lm -Wall -Wextra -std=c++17 -ggdb -I"../include" -L"../libe" *.cpp -o "../bin/main" && ./../bin/main'
+
+alias g++n='g++ -lm -std=c++17 -ggdb -Iinclude -Llibe *.cpp -o main '
+alias g++ne='g++ -lm -std=c++17 -ggdb -Iinclude -Llibe *.cpp -o main && ./main '
+alias g++nb='g++ -lm -std=c++17 -ggdb -I"../include" -L"../libe" *.cpp -o "../bin/main" '
+alias g++nbe='g++ -lm -std=c++17 -ggdb -I"../include" -L"../libe" *.cpp -o "../bin/main" && ./../bin/main'
+
+alias cppProject='mkdir bin src lib include && touch src/main.cpp src/testMain.txt '
+alias cppProjectE='mkdir bin src lib include && touch src/main.cpp src/testMain.txt && cd src && nvim main.cpp '
+
+
+# apps
+#alias telegram='nohup /home/mylinux/Desktop/Telegram/Telegram 2> /dev/null &'
+#alias freetube='nohup /home/mohammed/Downloads/Programmes/appimage/FreeTube_0.17.1_amd64.AppImage 2> /dev/null &'
+
+#alias idea='/opt/idea-IC-212.5457.46/bin/idea.sh'
+alias smartgit='cd /opt/smartgit && nohup ./bin/smartgit.sh && cd -'
+alias scrcpy_conf='nohup scrcpy -m 1080 --turn-screen-off --stay-awake --show-touches --disable-screensaver --no-power-on &'
+alias scrcpy_network='nohup scrcpy -m 1080 --turn-screen-off --stay-awake --show-touches --disable-screensaver --no-power-on --tcpip='
+alias scrcpy_record='nohup scrcpy -m 1080 --turn-screen-off --stay-awake --show-touches --disable-screensaver --no-power-on --record record_scrcpy_phone.mp4 &'
+#alias scrcpy_net='nohup scrcpy -m 1080 --turn-screen-off --stay-awake --show-touches --disable-screensaver --no-power-on & && scrcpy --tcpip '
+
+alias mytws-s="bluetoothctl scan on"
+alias mytws-c="bluetoothctl connect 56:CC:AD:07:0C:26"
+alias mytws-d="bluetoothctl disconnect 56:CC:AD:07:0C:26"
+
+alias ebook-convert_my="ebook-convert --enable-heuristics --paper-size=a4 "
+#
+### BIN FILE 
+alias python="/usr/bin/python3"
+alias cpython="/opt/miniconda3/bin/python"
+
+### Environement
+alias v12_dataSience_python='source ~/my-environment/PythonDataScince.3.12/bin/activate'
+alias v10_dataSience_python='source ~/my-environment/PythonDataScince/bin/activate'
+
